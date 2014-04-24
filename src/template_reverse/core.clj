@@ -8,8 +8,8 @@
         (let [p (difflib.DiffUtils/diff a b)] 
             (map 
                 (fn [itm] {
-                    :type (keyword (str         (.getType itm))) 
-                    :pos  (.getPosition      (.getOriginal itm))
+                    :type (keyword (str (.getType itm))) 
+                    :pos  (.getPosition (.getOriginal itm))
                     :len  (.size (.getLines (.getOriginal itm)))
                      }) 
                 (.getDeltas p)))))
@@ -24,7 +24,7 @@
 (defn- -set-wildcard [org idxs]
     (reduce 
         (fn [a b] (assoc a b :*)  ) 
-        [org] idxs))
+        (vec org) idxs))
 
 (defn- -reduce-wildcard [idxs]
     (map 
@@ -45,7 +45,7 @@
         #(hash-map :BEGIN (take-last len (first %)), :END (take len (last %))) 
         (partition 3 2 
             (partition-by #(= % :*) 
-                (flatten (conj (conj [:BOF] d) :EOF))))))
+                (flatten [:BOF d :EOF])))))
 
 (defn diff-detect
     "Get diff and get chunks"
