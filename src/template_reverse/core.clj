@@ -16,40 +16,38 @@
 
 
 (defn- -diff-index [col] 
-    (flatten (map #(range (:pos %) (+ (:pos %) (:len %))) col)))
+    (flatten 
+        (map #(range (:pos %) (+ (:pos %) (:len %))) 
+            col)))
 
+
+(defn- -set-wildcard [org idxs]
+    (reduce 
+        (fn [a b] (assoc a b :*)  ) 
+        [org] idxs))
 
 (defn- -reduce-wildcard [idxs]
     (map 
         first
         (filter #(not (and (apply = %) (= :* (first %) ) ) ) 
-            (partition 2 1 (conj idxs :EOF) ) 
-        )   
-    )   
-)
-
-
-(defn- -set-wildcard [org idxs]
-    (reduce (fn [a b] (assoc a b :*)  ) (vec org) idxs)
-)
-
+            (partition 2 1 (conj idxs :EOF) ))))
 
 (defn diff 
     "Get diff between Seq."
     [src dst] 
     (let [g (filter #(not (= (:type %) :INSERT)) (-diff src dst))] 
-        (-reduce-wildcard (-set-wildcard src (-diff-index g)))
-    )      
-)
+        (-reduce-wildcard (-set-wildcard src (-diff-index g))))      )
 
 (defn detect 
     "Get chunks with BEGIN,END and limited size by 'len' from 'd'."
     [d len]
-    (map #(hash-map :BEGIN (take-last len (first %)), :END (take len (last %))) (partition 3 2 (partition-by #(= % :*) (flatten (conj (conj [:BOF] d) :EOF))) ))
-)
+    (map 
+        #(hash-map :BEGIN (take-last len (first %)), :END (take len (last %))) 
+        (partition 3 2 
+            (partition-by #(= % :*) 
+                (flatten (conj (conj [:BOF] d) :EOF))))))
 
 (defn diff-detect
     "Get diff and get chunks"
-    ([src dst] (diff-detect-len src dst 20))
-    ([src dst len] (detect (diff src dst) len))
-)
+    ([src dst] (detect (diff src dst) 20))
+    ([src dst len] (detect (diff src dst) len)))
