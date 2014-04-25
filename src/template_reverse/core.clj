@@ -16,8 +16,7 @@
 
 (defn- -diff-index [col] 
     (flatten 
-        (map 
-            #(range (:pos %) (+ (:pos %) (:len %))) 
+        (map #(range (:pos %) (+ (:pos %) (:len %))) 
             col)))
 
 
@@ -54,3 +53,6 @@
     "Get diff and get chunks"
     ([src dst] (detect (diff src dst) 20))
     ([src dst len] (detect (diff src dst) len)))
+
+
+
