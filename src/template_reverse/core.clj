@@ -63,9 +63,7 @@
   (let [keylen (count key)
         parts (partition keylen (+ keylen n) coll)
         cnt (count-contains key parts)]
-    (do
-      (print n)
-      {:off n, :all (= cnt (count parts)), :cnt cnt}))
+    {:off n, :all (= cnt (count parts)), :cnt cnt})
   )
 
 (defn key-frequency [key coll]
