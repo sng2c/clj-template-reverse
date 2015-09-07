@@ -55,25 +55,29 @@
   ([src dst len] (detect (diff src dst) len)))
 
 
+(declare count-contains get-count-item key-frequency find-key-frequency)
 
-
-(defn- count-contains [src coll] (count (filter #{src} coll)))
-(defn- get-count-item
+(defn- -count-contains [src coll] (count (filter #{src} coll)))
+(defn- -get-count-item
   [key coll n]
   (let [keylen (count key)
         parts (partition keylen (+ keylen n) coll)
-        cnt (count-contains key parts)]
+        cnt (-count-contains key parts)]
     {:off n, :all (= cnt (count parts)), :cnt cnt})
   )
 
-(defn key-frequency [key coll]
-  (let [nums (range (inc (- (count coll) (count key))))]
-    (for [n nums, :let [item (get-count-item key coll n)] :when (and (:all item) (< 1 (:cnt item)))]
+(defn key-frequency
+  "Get Frequencies by offset of the key(coll) from first of coll"
+  [key coll]
+  (let [keyseq (seq key), collseq (seq coll), nums (range (inc (- (count collseq) (count keyseq))))]
+    (for [n nums, :let [item (-get-count-item keyseq collseq n)] :when (and (:all item) (< 1 (:cnt item)))]
       (dissoc item :all)
       )))
 
 
-(defn find-key-frequency [coll]
+(defn find-key-frequency
+  "Get All frequencies by offset of all available key(coll)s from first of coll"
+  [coll]
   (let [lastn (quot (count coll) 2)
         nums (range 1 (inc lastn))]
     (for [n nums :let [key (take n coll), freq (key-frequency key coll)] :when (not (empty? freq))]
