@@ -77,7 +77,6 @@
   (let [lastn (quot (count coll) 2)
         nums (range 1 (inc lastn))]
     (for [n nums :let [key (take n coll), freq (key-frequency key coll)] :when (not (empty? freq))]
-      (do
-        {:key key, :freq freq}))))
+      {:key key, :freq freq})))
 
 
