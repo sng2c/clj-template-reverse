@@ -14,7 +14,8 @@
 
 (deftest freq-test
   (testing "freq test"
-    (is (= '(
+    (is (= '(                                               ; An offset 0 is not matched from 3th.
+                                                            ; So an offset 0 is not comfortable.
               {:off 2, :cnt 2}                              ; '(A ? ? A ? ?)
               {:off 3, :cnt 2})                             ; '(A ? ? ? A ?)
            (key-frequency "A" "AABAAC")))
