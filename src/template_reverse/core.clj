@@ -59,7 +59,7 @@
 
 (defn- -count-sequantial-equals
   [src coll]
-  (count (first (partition-by false? (map #(= (seq src) (seq %)) coll)))))
+  (count (filter true? (first (partition-by false? (map #(= (seq src) (seq %)) coll))))))
 
 (defn- -get-count-item
   [key coll n]
