@@ -66,7 +66,7 @@
   (let [keylen (count key)
         parts (partition keylen (+ keylen n) coll)
         cnt (-count-sequantial-equals key parts)]
-    (if (> cnt 1) [n key]))
+    (if (> cnt 1) [key n cnt]))
   )
 
 (defn key-frequency

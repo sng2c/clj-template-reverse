@@ -21,9 +21,7 @@
 
 (deftest key-frequency-test
   (testing "freq test"
-    (is (= '([0 (\A)] [2 (\A)] [3 (\A)])
-           (key-frequency "A" "AABAAC")))
-    (is (= '([0 (\A)] [2 (\A)] [3 (\A)])
+    (is (= '([(\A) 0 2] [(\A) 2 2] [(\A) 3 2])
            (key-frequency "A" "AABAAC")))
     ))
 
@@ -32,24 +30,26 @@
   (testing "find freq test. See https://gist.github.com/sng2c/6077247"
     (is (= '()
            (find-key-frequency "A")))
-    (is (= '([0 (\A)])
+    (is (= '([(\A) 0 2])
            (find-key-frequency "AA")))
-    (is (= '([0 (\A)] [1 (\A)] [2 (\A)] [0 (\A \A)])
+    (is (= '(
+              [(\A) 0 4] [(\A) 1 2] [(\A) 2 2]
+              [(\A \A) 0 2])
            (find-key-frequency "AAAA")))
     (is (= '(
-              [1, (\A)], [3, (\A)], [5, (\A)],
-              [0, (\A \B)], [2, (\A \B)], [4, (\A \B)],
-              [1, (\A \B \A)],
-              [0, (\A \B \A \B)])
+              [(\A) 1 4], [(\A) 3 2], [(\A) 5 2],
+              [(\A \B) 0 4], [(\A \B) 2 2], [(\A \B) 4 2],
+              [(\A \B \A) 1 2],
+              [(\A \B \A \B) 0 2])
            (find-key-frequency "ABABABAB")))
     (is (= '(
-              [2, (\A)], [5, (\A)],
-              [1, (\A \B)],
-              [0, (\A \B \C)])
+              [(\A) 2 3], [(\A) 5 2],
+              [(\A \B) 1 2],
+              [(\A \B \C) 0 2])
            (find-key-frequency "ABCABCAC")))
     (is (= '(
-              [0, (\A)], [2, (\A)], [3, (\A)],
-              [1, (\A \A)])
+              [(\A) 0 2], [(\A) 2 2], [(\A) 3 2],
+              [(\A \A) 1 2])
            (find-key-frequency "AABAAC")))
     ))
 
