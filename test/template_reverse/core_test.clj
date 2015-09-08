@@ -12,39 +12,45 @@
     (is (= '(\A :* \C :* \E) (diff "ABCDE" "A123CE")))
     ))
 
-(deftest freq-test
-  (testing "freq test"
-    (is (= '(                                               ; An offset 0 is not matched from 3th.
-                                                            ; So an offset 0 is not comfortable.
-              {:off 2, :cnt 2}                              ; '(A ? ? A ? ?)
-              {:off 3, :cnt 2})                             ; '(A ? ? ? A ?)
-           (key-frequency "A" "AABAAC")))
-
-    (is (= '(
-              {:off 0, :cnt 2})                             ; '(AAAA AAAA)
-           (key-frequency "AAAA" "AAAAAAAA")))
-
-    (is (= '(
-              {
-               :key  (\A),
-               :freq (
-                       {:off 0, :cnt 4}                     ; '(A A A A) 4 repetitions by offset 0
-                       {:off 1, :cnt 2}                     ; '(A ? A ?) 2 repetitions by offset 1
-                       {:off 2, :cnt 2})}                   ; '(A ? ? A) 2 repetitions by offset 2
-              {:key  (\A \A),
-               :freq (
-                       {:off 0, :cnt 2})})                  ; '(AA AA) 2 repetitions by offset 0
-           (find-key-frequency "AAAA")))
-
-    (is (= '(
-              {:key  (\A),
-               :freq (
-                       {:off 2, :cnt 3}
-                       {:off 5, :cnt 2})}
-              {:key  (\A \B),
-               :freq (
-                       {:off 1, :cnt 3}                     ; '(AB ? AB ? AB)
-                       {:off 4, :cnt 2})})                  ; '(AB ? ?? ? AB)
-           (find-key-frequency "AB1AB2AB")))
+(deftest diff-detect-test
+  (testing "diff detect test"
+    (is (= '({:BEFORE (:BOF \A), :AFTER (\C)} {:BEFORE (\C), :AFTER (\E :EOF)})
+           (diff-detect "ABCDE" "A1C2E")))
     ))
 
+
+(deftest key-frequency-test
+  (testing "freq test"
+    (is (= '([0 (\A)] [2 (\A)] [3 (\A)])
+           (key-frequency "A" "AABAAC")))
+    (is (= '([0 (\A)] [2 (\A)] [3 (\A)])
+           (key-frequency "A" "AABAAC")))
+    ))
+
+
+(deftest find-key-frequency-test
+  (testing "find freq test. See https://gist.github.com/sng2c/6077247"
+    (is (= '()
+           (find-key-frequency "A")))
+    (is (= '([0 (\A)])
+           (find-key-frequency "AA")))
+    (is (= '([0 (\A)] [1 (\A)] [2 (\A)] [0 (\A \A)])
+           (find-key-frequency "AAAA")))
+    (is (= '(
+              [1, (\A)], [3, (\A)], [5, (\A)],
+              [0, (\A \B)], [2, (\A \B)], [4, (\A \B)],
+              [1, (\A \B \A)],
+              [0, (\A \B \A \B)])
+           (find-key-frequency "ABABABAB")))
+    (is (= '(
+              [2, (\A)], [5, (\A)],
+              [1, (\A \B)],
+              [0, (\A \B \C)])
+           (find-key-frequency "ABCABCAC")))
+    (is (= '(
+              [0, (\A)], [2, (\A)], [3, (\A)],
+              [1, (\A \A)])
+           (find-key-frequency "AABAAC")))
+    ))
+
+(find-key-frequency "AABAAC")
