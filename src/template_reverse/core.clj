@@ -51,9 +51,6 @@
                              (flatten [:BOF d :EOF])))))
 
 
-
-
-
 (defn find-pat [pat coll]
   (let [lastidx (inc (- (count coll) (count pat)))]
     (loop [p (seq pat), c (seq coll), idx 0]
