@@ -65,7 +65,7 @@
     )
   )
 
-(defn extract [diffs coll]
+(defn extract [pat coll]
   (reduce (fn [ctx x]
             (println ctx x)
             (let [
@@ -84,7 +84,7 @@
                 {:match (conj found {:pat x :val nil}), :rest subcoll}
                 ))
             )
-          {:match [], :rest (concat '(:BOF) (seq coll) '(:EOF))} diffs )
+          {:match [], :rest (concat '(:BOF) (seq coll) '(:EOF))} pat )
   )
 
 
@@ -93,7 +93,7 @@
 
 
 
-(defn diff-detect
+(defn pattern
   "Get diff and get chunks"
   ([src dst] (detect (diff src dst) 20))
   ([src dst len] (detect (diff src dst) len)))
@@ -122,7 +122,7 @@
       )))
 
 
-(defn find-key-frequency
+(defn repetition
   "Get All frequencies by offset of all available key(coll)s from first of coll"
   [coll]
   (let [lastn (quot (count coll) 2)
