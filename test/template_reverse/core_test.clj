@@ -28,7 +28,7 @@
 (def ext (extract df ["I" "am" "sng2c" "," "So" "I" "am" "KHS"]))
 (deftest extract-test
   (testing "Extract test"
-    (is (= ['("sng2c") '("KHS")] (map :val (:found ext))))
+    (is (= ['("sng2c") '("KHS")] (map :val (:match ext))))
     ))
 
 (deftest find-key-frequency-test

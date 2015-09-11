@@ -70,9 +70,10 @@
 
 (defn extract [diffs coll]
   (reduce (fn [ctx x]
+            (println ctx x)
             (let [
-                  found (:found ctx)
-                  subcoll (:coll ctx)
+                  found (:match ctx)
+                  subcoll (:rest ctx)
                   pat1 (:BEFORE x)
                   pat2 (:AFTER x)
                   [found-idx _ _ found-after] (find-pat pat1 subcoll)
@@ -80,13 +81,13 @@
               (if (not= -1 found-idx)
                 (let [[found-idx2 found-before2 found-key2 found-after2] (find-pat pat2 found-after)]
                   (if (not= -1 found-idx2)
-                    {:found (conj found {:pat x :val found-before2}), :coll (concat found-key2 found-after2)}
-                    {:found (conj found {:pat x :val nil}), :coll subcoll}
+                    {:match (conj found {:pat x :val found-before2}), :rest (concat found-key2 found-after2)}
+                    {:match (conj found {:pat x :val nil}), :rest subcoll}
                     ))
-                {:found (conj found {:pat x :val nil}), :coll subcoll}
+                {:match (conj found {:pat x :val nil}), :rest subcoll}
                 ))
             )
-          {:found [], :coll (concat '(:BOF) (seq coll) '(:EOF))} diffs )
+          {:match [], :rest (concat '(:BOF) (seq coll) '(:EOF))} diffs )
   )
 
 
