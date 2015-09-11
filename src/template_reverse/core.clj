@@ -1,5 +1,6 @@
 (ns template-reverse.core
-  (:import [difflib]))
+  (:import [difflib]
+           [clojure.core.match]))
 
 (declare diff-detect detect diff -diff -diff-index -set-wildcard -reduce-wildcard)
 
@@ -48,6 +49,51 @@
     (partition 3 2
                (partition-by #(= % :*)
                              (flatten [:BOF d :EOF])))))
+
+
+
+
+
+(defn find-pat [pat coll]
+  (let [lastidx (inc (- (count coll) (count pat)))]
+    (loop [p (seq pat), c (seq coll), idx 0]
+      (clojure.core.match/match [idx]
+             [lastidx] nil
+             :else (if (every? true? (map = p (drop idx c)))
+                     [idx (take idx c) p (drop (+ (count pat) idx) c)]
+                     (recur p c (inc idx))
+                     )
+             )
+      )
+    )
+  )
+
+(defn extract [diffs coll]
+  (reduce (fn [ctx x]
+            (let [
+                  found (:found ctx)
+                  subcoll (:coll ctx)
+                  pat1 (:BEFORE x)
+                  pat2 (:AFTER x)
+                  [found-idx _ _ found-after] (find-pat pat1 subcoll)
+                  ]
+              (if (not= -1 found-idx)
+                (let [[found-idx2 found-before2 found-key2 found-after2] (find-pat pat2 found-after)]
+                  (if (not= -1 found-idx2)
+                    {:found (conj found found-before2), :coll (concat found-key2 found-after2)}
+                    {:found (conj found nil), :coll subcoll}
+                    ))
+                {:found (conj found nil), :coll subcoll}
+                ))
+            )
+          {:found [], :coll (concat '(:BOF) (seq coll) '(:EOF))} diffs )
+  )
+
+
+
+
+
+
 
 (defn diff-detect
   "Get diff and get chunks"

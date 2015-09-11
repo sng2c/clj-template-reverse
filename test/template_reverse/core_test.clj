@@ -1,6 +1,8 @@
 (ns template-reverse.core-test
   (:require [clojure.test :refer :all]
-            [template-reverse.core :refer :all]))
+            [template-reverse.core :refer :all]
+            [clojure.core.match :refer [match]]
+            ))
 
 (deftest diff-test
   (testing "diff test"
@@ -18,6 +20,11 @@
            (diff-detect "ABCDE" "A1C2E")))
     ))
 
+; find in token
+(def sam1 ["I" "am" "A" "," "So" "I" "am" "Happy"])
+(def sam2 ["I" "am" "Babo" "," "So" "I" "was" "sad"])
+(def df (diff-detect sam1 sam2))
+(extract df ["I" "am" "KHS" "," "So" "I" "am" "HS"])
 
 (deftest key-frequency-test
   (testing "freq test"
