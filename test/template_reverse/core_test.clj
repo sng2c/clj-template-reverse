@@ -21,17 +21,20 @@
     ))
 
 ; find in token
-(def sam1 ["I" "am" "A" "," "So" "I" "am" "Happy"])
-(def sam2 ["I" "am" "Babo" "," "So" "I" "was" "sad"])
-(def df (diff-detect sam1 sam2))
-(extract df ["I" "am" "KHS" "," "So" "I" "am" "HS"])
 
-(deftest key-frequency-test
-  (testing "freq test"
-    (is (= '([(\A) 0 2] [(\A) 2 2] [(\A) 3 2])
-           (key-frequency "A" "AABAAC")))
+(def sam1 ["I" "am" "A" "," "So" "I" "am" "Happy"])
+(def sam2 ["I" "am" "Babo" "," "So" "I" "am" "sad"])
+(def df (diff-detect sam1 sam2))
+(def ext (extract df ["I" "am" "sng2c" "," "So" "I" "am" "KHS"]))
+(deftest extract-test
+  (testing "Extract test"
+    (is (= ['("sng2c") '("KHS")] (map :val (:found ext))))
     ))
 
+(deftest find-key-frequency-test
+  (testing "find freq test. See https://gist.github.com/sng2c/6077247"
+    (is (= '() (find-key-frequency "A")))
+    ))
 
 (deftest find-key-frequency-test
   (testing "find freq test. See https://gist.github.com/sng2c/6077247"

@@ -80,10 +80,10 @@
               (if (not= -1 found-idx)
                 (let [[found-idx2 found-before2 found-key2 found-after2] (find-pat pat2 found-after)]
                   (if (not= -1 found-idx2)
-                    {:found (conj found found-before2), :coll (concat found-key2 found-after2)}
-                    {:found (conj found nil), :coll subcoll}
+                    {:found (conj found {:pat x :val found-before2}), :coll (concat found-key2 found-after2)}
+                    {:found (conj found {:pat x :val nil}), :coll subcoll}
                     ))
-                {:found (conj found nil), :coll subcoll}
+                {:found (conj found {:pat x :val nil}), :coll subcoll}
                 ))
             )
           {:found [], :coll (concat '(:BOF) (seq coll) '(:EOF))} diffs )
