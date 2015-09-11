@@ -20,3 +20,13 @@
            (diff-detect "ABCDE" "A1C2E")))
     ))
 
+; find in token
+
+(def sam1 ["I" "am" "A" "," "So" "I" "am" "Happy"])
+(def sam2 ["I" "am" "Babo" "," "So" "I" "am" "sad"])
+(def df (diff-detect sam1 sam2))
+(def ext (extract df ["I" "am" "sng2c" "," "So" "I" "am" "KHS"]))
+(deftest extract-test
+  (testing "Extract test"
+    (is (= ['("sng2c") '("KHS")] (map :val (:match ext))))
+    ))
