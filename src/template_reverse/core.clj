@@ -1,6 +1,6 @@
 (ns template-reverse.core
-  (:import [difflib]
-           [clojure.core.match]))
+  (:import [difflib])
+  (:require [clojure.core.match :refer [match]]))
 
 (declare diff-detect detect diff -diff -diff-index -set-wildcard -reduce-wildcard)
 
@@ -54,7 +54,7 @@
 (defn find-pat [pat coll]
   (let [lastidx (inc (- (count coll) (count pat)))]
     (loop [p (seq pat), c (seq coll), idx 0]
-      (clojure.core.match/match [idx]
+      (match [idx]
              [lastidx] nil
              :else (if (every? true? (map = p (drop idx c)))
                      [idx (take idx c) p (drop (+ (count pat) idx) c)]
