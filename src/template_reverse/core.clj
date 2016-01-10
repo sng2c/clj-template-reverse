@@ -1,18 +1,16 @@
 (ns template-reverse.core
-  (:import [difflib])
+  (:import [difflib DiffUtils Delta])
   (:require [clojure.core.match :refer [match]]))
 
 (declare diff-detect detect diff -diff -diff-index -set-wildcard -reduce-wildcard)
 
 (defn- -diff [src dst]
-  (let [a (java.util.ArrayList. (vec src)) b (java.util.ArrayList. (vec dst))]
-    (let [p (difflib.DiffUtils/diff a b)]
-      (map
-        #(hash-map
-          :type (keyword (str (.getType %)))
-          :pos (.getPosition (.getOriginal %))
-          :len (.size (.getLines (.getOriginal %))))
-        (.getDeltas p)))))
+  (map
+    (fn [^Delta delta]
+      {:type (keyword (str (.getType delta)))
+       :pos (.getPosition (.getOriginal delta))
+       :len (.size (.getLines (.getOriginal delta)))})
+    (.getDeltas (DiffUtils/diff (vec src) (vec dst)))))
 
 
 (defn- -diff-index [col]
