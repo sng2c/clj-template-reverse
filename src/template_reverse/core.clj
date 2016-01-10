@@ -65,7 +65,6 @@
 
 (defn extract [pat coll]
   (reduce (fn [ctx x]
-            (println ctx x)
             (let [
                   found (:match ctx)
                   subcoll (:rest ctx)
