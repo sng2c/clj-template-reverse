@@ -51,7 +51,9 @@
 
 (defn find-pat [pat coll]
   (let [lastidx (inc (- (count coll) (count pat)))]
-    (loop [p (seq pat), c (seq coll), idx 0]
+    (loop [p (seq pat)
+           c (seq coll)
+           idx 0]
       (match [idx]
              [lastidx] nil
              :else (if (every? true? (map = p (drop idx c)))
@@ -75,13 +77,13 @@
               (if (not= -1 found-idx)
                 (let [[found-idx2 found-before2 found-key2 found-after2] (find-pat pat2 found-after)]
                   (if (not= -1 found-idx2)
-                    {:match (conj found {:pat x :val found-before2}), :rest (concat found-key2 found-after2)}
-                    {:match (conj found {:pat x :val nil}), :rest subcoll}
+                    {:match (conj found {:pat x :val found-before2}) :rest (concat found-key2 found-after2)}
+                    {:match (conj found {:pat x :val nil}) :rest subcoll}
                     ))
-                {:match (conj found {:pat x :val nil}), :rest subcoll}
+                {:match (conj found {:pat x :val nil}) :rest subcoll}
                 ))
             )
-          {:match [], :rest (concat '(:BOF) (seq coll) '(:EOF))} pat )
+          {:match [] :rest (concat '(:BOF) (seq coll) '(:EOF))} pat )
   )
 
 
@@ -113,8 +115,11 @@
 (defn key-frequency
   "Get Frequencies by offset of the key(coll) from first of coll"
   [key coll]
-  (let [keyseq (seq key), collseq (seq coll), nums (range (inc (- (count collseq) (count keyseq))))]
-    (for [n nums, :let [item (-get-count-item keyseq collseq n)] :when item]
+  (let [keyseq (seq key)
+        collseq (seq coll)
+        nums (range (inc (- (count collseq) (count keyseq))))]
+    (for [n nums
+          :let [item (-get-count-item keyseq collseq n)] :when item]
       item
       )))
 
@@ -124,7 +129,8 @@
   [coll]
   (let [lastn (quot (count coll) 2)
         nums (range 1 (inc lastn))]
-    (reduce concat (for [n nums :let [key (take n coll), freq (key-frequency key coll)] :when freq]
+    (reduce concat (for [n nums :let [key (take n coll)
+                                      freq (key-frequency key coll)] :when freq]
                      freq))))
 
 
